@@ -14,7 +14,6 @@ class Cadastro extends StatefulWidget {
 class _CadastroState extends State<Cadastro> {
 
   final formKey = GlobalKey<FormState>();
-  bool deuCerto = false;
 
   Usuarios usuario = Usuarios();
 
@@ -61,12 +60,11 @@ class _CadastroState extends State<Cadastro> {
     auth.createUserWithEmailAndPassword(
         email: usuario.email, password: usuario.senha
     ).then((firebaseUser) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deu certo'), backgroundColor: Colors.green,));
-      deuCerto = true;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Cadastro criado com sucesso'), backgroundColor: Colors.green,));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
     }).catchError((error){
       print('erro:'+error.toString());
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não deu certo')));
-      deuCerto = false;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não foi possível fazer o seu cadastro'), backgroundColor: Colors.red,));
     });
     
   }
@@ -143,7 +141,7 @@ class _CadastroState extends State<Cadastro> {
                             if(value!.contains('@')){
                               return null;
                             }else{
-                              return 'O email deve ter o @!';
+                              return 'Informe o email corretamente';
                             }
                           },
                         ),
@@ -155,7 +153,7 @@ class _CadastroState extends State<Cadastro> {
                         style: TextStyle(fontSize: 20),
                         validator: (value){
                           if(value!.length <= 6){
-                            return 'A senha deve ter mais que 6 caracteres';
+                            return 'Informe a senha';
                           }else{
                             return null;
                           }
@@ -186,9 +184,6 @@ class _CadastroState extends State<Cadastro> {
                               usuario.email = _controllerEmail.text;
                               usuario.senha = _controllerSenha.text;
                               _cadastrarUsuario(usuario);
-                              if(deuCerto){
-                                return Home();
-                              }
                             }
                           },
                           child: Text('Cadastrar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
