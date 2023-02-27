@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whatsapp1/Model/usuarios.dart';
 import 'package:whatsapp1/cadastro.dart';
 
 class Login extends StatefulWidget {
@@ -9,6 +10,17 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  final formKey = GlobalKey<FormState>();
+
+  Usuarios usuario = Usuarios();
+
+
+  TextEditingController _controllerEmail = TextEditingController();
+  TextEditingController _controllerSenha = TextEditingController();
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

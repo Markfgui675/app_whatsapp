@@ -14,6 +14,7 @@ class Cadastro extends StatefulWidget {
 class _CadastroState extends State<Cadastro> {
 
   final formKey = GlobalKey<FormState>();
+  bool deuCerto = false;
 
   Usuarios usuario = Usuarios();
 
@@ -61,10 +62,11 @@ class _CadastroState extends State<Cadastro> {
         email: usuario.email, password: usuario.senha
     ).then((firebaseUser) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deu certo'), backgroundColor: Colors.green,));
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+      deuCerto = true;
     }).catchError((error){
       print('erro:'+error.toString());
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não deu certo')));
+      deuCerto = false;
     });
     
   }
@@ -184,6 +186,9 @@ class _CadastroState extends State<Cadastro> {
                               usuario.email = _controllerEmail.text;
                               usuario.senha = _controllerSenha.text;
                               _cadastrarUsuario(usuario);
+                              if(deuCerto){
+                                return Home();
+                              }
                             }
                           },
                           child: Text('Cadastrar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
