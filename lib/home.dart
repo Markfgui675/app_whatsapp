@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp1/telas/AbaContatos.dart';
+import 'package:whatsapp1/telas/AbaConversas.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -8,7 +10,9 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+
+  TabController? _tabController;
 
   String? _email;
 
@@ -27,17 +31,52 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     _recuperarEmail();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _tabController?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xff075e54),
         title: Text('WhatsApp'),
+        centerTitle: true,
+        bottom: TabBar(
+          indicatorColor: Colors.white,
+          indicatorWeight: 5.0,
+          labelColor: Colors.white,
+          labelStyle: TextStyle(fontWeight: FontWeight.bold),
+          controller: _tabController,
+          tabs: <Widget>[
+            Tab(
+              text: 'Conversas',
+            ),
+            Tab(
+              text: 'Contatos',
+            )
+          ],
+        ),
       ),
-      body: Container(
-        child: Text(_email!),
+
+      body: TabBarView(
+        controller: _tabController,
+        children: <Widget>[
+
+          //conversas--------------------------
+          AbaContatos(),
+
+
+
+          //contatos---------------------------
+          AbaConversas()
+        ],
       ),
     );
   }

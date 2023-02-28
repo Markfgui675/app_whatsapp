@@ -31,7 +31,7 @@ class _LoginState extends State<Login> {
     ).then((firebaseUser){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sucesso no login'),
         backgroundColor: Colors.green,));
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
     }).catchError((error){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não foi possível fazer o seu login, '
           'verifique o email e senha e tente novamente'), backgroundColor: Colors.red,));
@@ -40,10 +40,11 @@ class _LoginState extends State<Login> {
 
   Future _verificarUsuarioLogado() async {
     FirebaseAuth auth = FirebaseAuth.instance;
+    //auth.signOut();
 
     FirebaseUser usuarioLogado = await auth.currentUser();
     if(usuarioLogado != null){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
     }
   }
 

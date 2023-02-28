@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whatsapp1/Model/usuarios.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'home.dart';
 
@@ -60,8 +61,17 @@ class _CadastroState extends State<Cadastro> {
     auth.createUserWithEmailAndPassword(
         email: usuario.email, password: usuario.senha
     ).then((firebaseUser) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Cadastro criado com sucesso'), backgroundColor: Colors.green,));
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+
+      //Salvar dados do usuário
+      Firestore db = Firestore.instance;
+
+      db.collection('usuarios')
+      .document(firebaseUser.uid)
+      .setData(usuario.toMap());
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Cadastro criado com sucesso'),
+        backgroundColor: Colors.green,));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
     }).catchError((error){
       print('erro:'+error.toString());
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não foi possível fazer o seu cadastro'), backgroundColor: Colors.red,));
@@ -81,9 +91,10 @@ class _CadastroState extends State<Cadastro> {
 
       body: Container(
         decoration: BoxDecoration(color: Color(0xff075e54)),
-        padding: EdgeInsets.all(16),
+        //padding: EdgeInsets.all(16),
         child: Center(
           child: SingleChildScrollView(
+              padding: EdgeInsets.all(16),
             child: Column(
               children: <Widget>[
                 Padding(padding: EdgeInsets.all(0),
