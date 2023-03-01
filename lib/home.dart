@@ -70,12 +70,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         children: <Widget>[
 
           //conversas--------------------------
-          AbaContatos(),
+          AbaConversas(),
 
 
 
           //contatos---------------------------
-          AbaConversas()
+          AbaContatos()
         ],
       ),
     );
