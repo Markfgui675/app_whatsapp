@@ -58,6 +58,7 @@ class _CadastroState extends State<Cadastro> {
   _cadastrarUsuario(Usuarios usario){
     
     FirebaseAuth auth = FirebaseAuth.instance;
+
     auth.createUserWithEmailAndPassword(
         email: usuario.email, password: usuario.senha
     ).then((firebaseUser) {
@@ -71,12 +72,12 @@ class _CadastroState extends State<Cadastro> {
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Cadastro criado com sucesso'),
         backgroundColor: Colors.green,));
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false); //Remove todas as rotas anteriores
     }).catchError((error){
       print('erro:'+error.toString());
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não foi possível fazer o seu cadastro'), backgroundColor: Colors.red,));
     });
-    
+
   }
 
   @override

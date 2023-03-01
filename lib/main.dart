@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:whatsapp1/RouteGenerator.dart';
 
 import 'cadastro.dart';
 import 'home.dart';
@@ -16,6 +17,8 @@ void main(){
       primaryColor: Color(0xff25d366),
       accentColor: Color(0xff25d366)
     ),
+    initialRoute: '/',
+    onGenerateRoute: RouteGenerator.generateRoute,
     debugShowCheckedModeBanner: false,
   ));
 }
