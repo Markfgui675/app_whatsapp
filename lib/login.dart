@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
 
     FirebaseUser usuarioLogado = await auth.currentUser();
     if(usuarioLogado != null){
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/configuracoes');
     }
   }
 

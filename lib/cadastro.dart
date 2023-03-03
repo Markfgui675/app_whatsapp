@@ -75,7 +75,8 @@ class _CadastroState extends State<Cadastro> {
       Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false); //Remove todas as rotas anteriores
     }).catchError((error){
       print('erro:'+error.toString());
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não foi possível fazer o seu cadastro'), backgroundColor: Colors.red,));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não foi possível fazer o seu cadastro'),
+        backgroundColor: Colors.red,));
     });
 
   }

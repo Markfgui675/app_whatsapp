@@ -36,8 +36,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     FirebaseAuth auth = FirebaseAuth.instance;
 
     switch(itemEscolhido){
-      case 'Sair': _deslogarUsuario();
-                    break;
+      case 'Sair':
+        _deslogarUsuario();
+        break;
+      case 'Configurações':
+        Navigator.pushNamed(context, '/configuracoes');
+        break;
     }
   }
 
