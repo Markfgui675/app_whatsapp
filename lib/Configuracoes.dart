@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp1/Model/usuarios.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
 class Configuracoes extends StatefulWidget {
@@ -15,10 +17,14 @@ class _ConfiguracoesState extends State<Configuracoes> {
 
   final formKey = GlobalKey<FormState>();
   Usuarios usuario = Usuarios();
+  String? _nomeusuarioLogado;
+  bool _subindoImagem = false;
+  String? _urlImagemRecuperada;
 
   TextEditingController _controllerName = TextEditingController();
-  String? _nome;
+  String? _idusuarioLogado;
   File? _imagem;
+  File? imagemSelecionada;
 
   Future? _recuperarImagem(String origemImagem) async {
 
@@ -35,7 +41,61 @@ class _ConfiguracoesState extends State<Configuracoes> {
 
     setState(() {
       _imagem = imagemSelecionada;
+      if(_imagem != null){
+        _subindoImagem = true;
+        _uploadImage();
+      }
     });
+  }
+
+  Future _uploadImage() async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference pastaRaiz = storage.ref();
+    StorageReference arquivo = pastaRaiz
+    .child('perfil')
+    .child('${_idusuarioLogado}.jpg');
+    
+    //Upload de imagem
+    StorageUploadTask task = arquivo.putFile(_imagem);
+
+    //Controlar progresso do upload
+    task.events.listen((StorageTaskEvent storageEvent) {
+      if(storageEvent.type == SystemMouseCursors.progress){
+        setState(() {
+          _subindoImagem = true;
+        });
+      }else if(storageEvent.type == StorageTaskEventType.success){
+        setState(() {
+          _subindoImagem = false;
+        });
+      }
+    });
+
+    task.onComplete.then((StorageTaskSnapshot snapshot){
+      _recuperarUrlImagem(snapshot);
+    });
+
+  }
+
+  Future _recuperarUrlImagem(StorageTaskSnapshot snapshot) async {
+    String url = await snapshot.ref.getDownloadURL();
+    setState(() {
+      _urlImagemRecuperada = url;
+    });
+  }
+
+  _recuperarDadosUsuario() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseUser usuarioLogado = await auth.currentUser();
+    _idusuarioLogado = usuarioLogado.uid;
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _recuperarDadosUsuario();
+
   }
 
   @override
@@ -52,11 +112,15 @@ class _ConfiguracoesState extends State<Configuracoes> {
             padding: EdgeInsets.all(16),
             child: Column(
               children: <Widget>[
-                //carregando
+                _subindoImagem
+                ? CircularProgressIndicator()
+                : Container(),
                 CircleAvatar(
                   radius: 100,
                   backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage('https://firebasestorage.googleapis.com/v0/b/whatsapp-53c06.appspot.com/o/perfil%2Fperfil5.jpg?alt=media&token=25c83b65-44b6-4b48-bca2-27fce8f0d23b'),
+                  backgroundImage: _urlImagemRecuperada != null
+                    ? NetworkImage(_urlImagemRecuperada!)
+                    : null
                 ),
                 SizedBox(height: 20),
                 Row(
