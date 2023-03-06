@@ -110,8 +110,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           //conversas--------------------------
           AbaConversas(),
 
-
-
           //contatos---------------------------
           AbaContatos()
         ],

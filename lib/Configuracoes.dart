@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp1/Model/usuarios.dart';
@@ -79,16 +80,50 @@ class _ConfiguracoesState extends State<Configuracoes> {
 
   Future _recuperarUrlImagem(StorageTaskSnapshot snapshot) async {
     String url = await snapshot.ref.getDownloadURL();
+    _atualizarUrlImagemFirestore(url);
     setState(() {
       _urlImagemRecuperada = url;
     });
   }
 
+  _atualizarUrlImagemFirestore(String url){
+    Firestore db = Firestore.instance;
+
+    Map<String, dynamic> dadosAtualizar = {
+      'urlImagem':url
+    };
+
+    db.collection('usuarios')
+    .document(_idusuarioLogado)
+    .updateData(dadosAtualizar);
+  }
+  
+  _atualizarDadosUsuario(String name) async {
+    Firestore db = Firestore.instance;
+    db.collection('usuarios')
+    .document(_idusuarioLogado)
+    .setData({
+      'nome':name
+    });
+  }
+
   _recuperarDadosUsuario() async {
     FirebaseAuth auth = FirebaseAuth.instance;
+    Firestore db = Firestore.instance;
     FirebaseUser usuarioLogado = await auth.currentUser();
     _idusuarioLogado = usuarioLogado.uid;
+    DocumentSnapshot snapshot = await db.collection('usuarios')
+        .document(_idusuarioLogado)
+        .get();//recupera os dados do usuário específicos
 
+    Map<String, dynamic> dados = snapshot.data;
+    _controllerName.text = dados['nome'];
+
+    if(dados['urlImagem'] != null){
+
+      _urlImagemRecuperada = dados['urlImagem'];
+
+    }
   }
 
   @override
@@ -174,7 +209,7 @@ class _ConfiguracoesState extends State<Configuracoes> {
                   ),
                   onPressed: (){
                     if(formKey.currentState!.validate()){
-
+                      _atualizarDadosUsuario(_controllerName.text);
                     }
                   },
                   child: Text('Salvar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
