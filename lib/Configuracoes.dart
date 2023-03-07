@@ -106,7 +106,7 @@ class _ConfiguracoesState extends State<Configuracoes> {
     };
 
     db.collection('usuarios').document(_idusuarioLogado).updateData(dadosAtualizar);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Cadastro criado com sucesso'),
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Nome salvo!'),
       backgroundColor: Colors.green,));
 
   }
