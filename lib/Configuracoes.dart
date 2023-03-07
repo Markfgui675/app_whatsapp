@@ -105,9 +105,9 @@ class _ConfiguracoesState extends State<Configuracoes> {
       'nome':name
     };
 
-    db.collection('usuarios')
-        .document(_idusuarioLogado)
-        .updateData(dadosAtualizar);
+    db.collection('usuarios').document(_idusuarioLogado).updateData(dadosAtualizar);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Cadastro criado com sucesso'),
+      backgroundColor: Colors.green,));
 
   }
 
