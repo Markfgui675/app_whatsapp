@@ -100,11 +100,15 @@ class _ConfiguracoesState extends State<Configuracoes> {
   
   _atualizarDadosUsuario(String name) async {
     Firestore db = Firestore.instance;
-    db.collection('usuarios')
-    .document(_idusuarioLogado)
-    .setData({
+
+    Map<String, dynamic> dadosAtualizar = {
       'nome':name
-    });
+    };
+
+    db.collection('usuarios')
+        .document(_idusuarioLogado)
+        .updateData(dadosAtualizar);
+
   }
 
   _recuperarDadosUsuario() async {
@@ -147,9 +151,12 @@ class _ConfiguracoesState extends State<Configuracoes> {
             padding: EdgeInsets.all(16),
             child: Column(
               children: <Widget>[
-                _subindoImagem
-                ? CircularProgressIndicator()
-                : Container(),
+                Container(
+                  padding: EdgeInsets.all(16),
+                  child: _subindoImagem
+                      ? CircularProgressIndicator()
+                      : Container(),
+                ),
                 CircleAvatar(
                   radius: 100,
                   backgroundColor: Colors.grey,
@@ -177,26 +184,35 @@ class _ConfiguracoesState extends State<Configuracoes> {
                   ],
                 ),
                 SizedBox(height: 20),
-                TextFormField(
-                  controller: _controllerName,
-                  keyboardType: TextInputType.text,
-                  style: TextStyle(fontSize: 20),
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                      hintText: 'Nome',
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32),
-                      )
+                Form(
+                  key: formKey,
+                  child: TextFormField(
+                    controller: _controllerName,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 20),
+
+                    /*onChanged: (texto){
+                      _atualizarDadosUsuario(texto);
+                    },
+                     */
+
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                        hintText: 'Nome',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32),
+                        )
+                    ),
+                    validator: (value){
+                      if(value!.length >= 1){
+                        return null;
+                      }else{
+                        return 'Coloque um nome!';
+                      }
+                    },
                   ),
-                  validator: (value){
-                    if(value!.length >= 1){
-                      return null;
-                    }else{
-                      return 'Coloque um nome!';
-                    }
-                  },
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
