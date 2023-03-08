@@ -160,9 +160,10 @@ class _ConfiguracoesState extends State<Configuracoes> {
                 CircleAvatar(
                   radius: 100,
                   backgroundColor: Colors.grey,
-                  backgroundImage: _urlImagemRecuperada != null
-                    ? NetworkImage(_urlImagemRecuperada!)
-                    : null
+                  backgroundImage:
+                  usuario.urlImagem == ''
+                      ?  null
+                      :  NetworkImage(usuario.urlImagem)
                 ),
                 SizedBox(height: 20),
                 Row(

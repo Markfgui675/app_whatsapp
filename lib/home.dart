@@ -30,6 +30,16 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   }
 
+  Future _verificarUsuarioLogado() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    //auth.signOut();
+
+    FirebaseUser usuarioLogado = await auth.currentUser();
+    if(usuarioLogado == null){
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
   _escolhaMenuItem(String itemEscolhido){
     print('itemEscolhido: '+itemEscolhido);
 
@@ -55,8 +65,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    _verificarUsuarioLogado();
     _recuperarEmail();
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
   }
 
   @override

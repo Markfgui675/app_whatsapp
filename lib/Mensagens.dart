@@ -12,6 +12,8 @@ class Mensagens extends StatefulWidget {
 
 class _MensagensState extends State<Mensagens> {
 
+  Usuarios usuario = Usuarios();
+
   List<String> listaMensagen = [
     'Olá meu amigo, tudo bem?',
     'Tudo! E contigo?',
@@ -21,7 +23,10 @@ class _MensagensState extends State<Mensagens> {
   TextEditingController _mensagemController = TextEditingController();
 
   _enviarMensagem(){
+    String textoMensagen = _mensagemController.text;
+    if(textoMensagen.isNotEmpty){
 
+    }
   }
 
   _enviarFoto(){
@@ -112,11 +117,25 @@ class _MensagensState extends State<Mensagens> {
 
 
 
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff075e54),
-        title: Text(widget.contato.nome),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            CircleAvatar(
+              maxRadius: 20,
+              backgroundColor: Colors.grey,
+              backgroundImage:
+              widget.contato.urlImagem == ''
+              ?  null
+              :  NetworkImage(widget.contato.urlImagem)
+            ),
+            SizedBox(width: 12),
+            Text(widget.contato.nome)
+          ]
+        ),
       ),
       body: Container(
         width: double.infinity,

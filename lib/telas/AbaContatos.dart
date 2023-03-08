@@ -89,6 +89,10 @@ class _AbaContatosState extends State<AbaContatos> {
                     leading: CircleAvatar(
                       maxRadius: 30,
                       backgroundColor: Colors.grey,
+                      backgroundImage:
+                      usuario.urlImagem == ''
+                          ?  null
+                          :  NetworkImage(usuario.urlImagem)
                     ),
                     title: Text(
                       usuario.nome,
