@@ -1,4 +1,5 @@
 class Usuarios {
+  String _idUsuario = '';
   String _nome = '';
   String _email = '';
   String _senha = '';
@@ -16,6 +17,12 @@ class Usuarios {
     return map;
   }
 
+
+  String get idUsuario => _idUsuario;
+
+  set idUsuario(String value) {
+    _idUsuario = value;
+  }
 
   String get senha => _senha;
 

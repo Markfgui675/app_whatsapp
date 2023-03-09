@@ -20,7 +20,7 @@ class _ConfiguracoesState extends State<Configuracoes> {
   Usuarios usuario = Usuarios();
   String? _nomeusuarioLogado;
   bool _subindoImagem = false;
-  String? _urlImagemRecuperada;
+  String _urlImagemRecuperada = '';
 
   TextEditingController _controllerName = TextEditingController();
   String? _idusuarioLogado;
@@ -161,9 +161,9 @@ class _ConfiguracoesState extends State<Configuracoes> {
                   radius: 100,
                   backgroundColor: Colors.grey,
                   backgroundImage:
-                  usuario.urlImagem == ''
+                  _urlImagemRecuperada == ''
                       ?  null
-                      :  NetworkImage(usuario.urlImagem)
+                      :  NetworkImage(_urlImagemRecuperada)
                 ),
                 SizedBox(height: 20),
                 Row(

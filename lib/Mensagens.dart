@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp1/Model/Mensagem.dart';
 
 import 'Model/usuarios.dart';
 
@@ -13,6 +16,8 @@ class Mensagens extends StatefulWidget {
 class _MensagensState extends State<Mensagens> {
 
   Usuarios usuario = Usuarios();
+  String? _idusuarioLogado;
+  String? _idusuarioDestinatario;
 
   List<String> listaMensagen = [
     'Olá meu amigo, tudo bem?',
@@ -22,15 +27,59 @@ class _MensagensState extends State<Mensagens> {
   ];
   TextEditingController _mensagemController = TextEditingController();
 
+  _recuperarDadosUsuario() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    Firestore db = Firestore.instance;
+    FirebaseUser usuarioLogado = await auth.currentUser();
+    _idusuarioLogado = usuarioLogado.uid;//recupera os dados do usuário específicos
+    _idusuarioDestinatario = widget.contato.idUsuario;
+
+  }
+
   _enviarMensagem(){
+
     String textoMensagen = _mensagemController.text;
     if(textoMensagen.isNotEmpty){
+      Mensagem mensagem = Mensagem();
+      mensagem.idUsuario = _idusuarioLogado!;
+      mensagem.mensagem = textoMensagen;
+      mensagem.urlImagem = '';
+      mensagem.tipo = 'texto';
+
+      _salvarMensagem(_idusuarioLogado!, _idusuarioDestinatario!, mensagem);
 
     }
+
+  }
+
+  _salvarMensagem(String idRemetente, String idDestinatario, Mensagem msg) async {
+
+    Firestore db = Firestore.instance;
+
+    await db.collection('mensagens')
+    .document(idRemetente)
+    .collection(idDestinatario)
+    .add(msg.toMap());
+
+    _mensagemController.clear();
+
+    /*
+    +mensagens
+      +jamilton
+        +aluno
+          +identificadorFirebase
+            <Mensagem>
+     */
   }
 
   _enviarFoto(){
 
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _recuperarDadosUsuario();
   }
 
   @override
