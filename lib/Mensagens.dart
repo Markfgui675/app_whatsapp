@@ -48,6 +48,7 @@ class _MensagensState extends State<Mensagens> {
       mensagem.tipo = 'texto';
 
       _salvarMensagem(_idusuarioLogado!, _idusuarioDestinatario!, mensagem);
+      _salvarMensagem(_idusuarioDestinatario!, _idusuarioLogado!, mensagem);
 
     }
 
@@ -93,7 +94,7 @@ class _MensagensState extends State<Mensagens> {
             padding: EdgeInsets.only(right: 8),
             child: TextField(
               controller: _mensagemController,
-              autofocus: true,
+              autofocus: false,
               keyboardType: TextInputType.text,
               style: TextStyle(fontSize: 16),
               decoration: InputDecoration(
@@ -105,7 +106,7 @@ class _MensagensState extends State<Mensagens> {
                   borderRadius: BorderRadius.circular(32)
                 ),
                 prefixIcon: IconButton(
-                  onPressed: (){_enviarFoto();},
+                  onPressed: _enviarFoto,
                   icon: Icon(Icons.camera_alt, color: Color(0xff075e54),)
                 ),
               ),
@@ -122,34 +123,31 @@ class _MensagensState extends State<Mensagens> {
     );
 
   var stream = StreamBuilder(
-    stream: db.collection('mensagens')
+    stream:
+        db.collection('mensagens')
         .document(_idusuarioLogado)
-        .collection(_idusuarioDestinatario).snapshots(),
+        .collection(_idusuarioDestinatario)
+        .snapshots(),
     builder: (context, snapshot){
       switch(snapshot.connectionState){
         case ConnectionState.none:
         case ConnectionState.waiting:
         return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('Carregando mensagens...'),
-              SizedBox(height: 20),
-              CircularProgressIndicator()
-            ],
-          ),
-        );
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Carregando mensagens...'),
+                SizedBox(height: 20),
+                CircularProgressIndicator()
+              ],
+            ),
+          );
           break;
         case ConnectionState.active:
         case ConnectionState.done:
           QuerySnapshot? querySnapshot = snapshot.data;
-
-          if(snapshot.hasError){
-            return Expanded(
-              child: Text('Erro ao carregar dados!'),
-            );
-          } else{
-            return Expanded(
+          print('tô aqui');
+          return Expanded(
                 child: ListView.builder(
                   itemCount: querySnapshot!.documents.length,
                   itemBuilder: (context, index){
@@ -162,13 +160,13 @@ class _MensagensState extends State<Mensagens> {
 
                     //Define cores e alinhamentos
                     Alignment alinhamento = Alignment.centerRight;
-                    Color cor = Color(0xffd2ffa5);
-                    if(index % 2 == 0){
-                      alinhamento = Alignment.centerRight;
-                      cor = Color(0xffd2ffa5);
-                    } else {
+                    Color cor = const Color(0xffd2ffa5);
+                    if(_idusuarioLogado != item['idUsuario']){
                       alinhamento = Alignment.centerLeft;
                       cor = Colors.white;
+                    } else {
+                      alinhamento = Alignment.centerRight;
+                      cor = Color(0xffd2ffa5);
                     }
 
                     return Align(
@@ -182,14 +180,13 @@ class _MensagensState extends State<Mensagens> {
                               color: cor,
                               borderRadius: BorderRadius.all(Radius.circular(8))
                           ),
-                          child: Text(item['mensagens'], style: TextStyle(fontSize: 16),),
+                          child: Text(item['mensagem'], style: TextStyle(fontSize: 16),),
                         ),
                       ),
                     );
                   },
                 )
             );
-          }
           break;
       }
     },
@@ -199,7 +196,7 @@ class _MensagensState extends State<Mensagens> {
       child: ListView.builder(
         itemCount: listaMensagen.length,
           itemBuilder: (context, index){
-          
+
           double larguraContainer = MediaQuery.of(context).size.width * 0.8;
 
           //Define cores e alinhamentos
